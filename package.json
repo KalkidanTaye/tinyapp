@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/KalkidanTaye/tinyapp/issues"
   },
-  "homepage": "https://github.com/KalkidanTaye/tinyapp#readme"
+  "homepage": "https://github.com/KalkidanTaye/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
