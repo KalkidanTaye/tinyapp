@@ -60,11 +60,37 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.post("/urls", (req, res) => {
   console.log(req.body); // Log the POST request body to the console
-  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+  res.redirect("/urls");
 });
 
 //delete short URL from database
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
+  res.redirect("/urls");
+});
+
+// show update form
+app.post("/urls/:shortURL/update", (req, res) => {
+  const currentLongURL = urlDatabase[req.params.shortURL];
+  const templateVars = {
+    shortURL: req.params.shortURL,
+    longURL: currentLongURL,
+  };
+  res.render("urls_show", templateVars);
+});
+
+//update urlDatabase
+
+app.post("/urls/:shortURL", (req, res) => {
+  // extract the shortURL
+  const shortURL = req.params.shortURL;
+
+  // extract the updated longURL from the form
+  const updatedLongURL = req.body.longURL;
+
+  // update the db
+  urlDatabase[shortURL] = updatedLongURL;
+
+  // redirect to /quotes
   res.redirect("/urls");
 });
