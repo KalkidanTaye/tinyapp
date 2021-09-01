@@ -107,9 +107,19 @@ app.post("/login", (req, res) => {
   res.redirect("/urls");
 });
 
-// logout
+// logout a user
 
 app.post("/logout", (req, res) => {
   res.clearCookie("username");
   res.redirect("/urls");
+});
+
+//Register New User
+app.get("/register", (req, res) => {
+  const templateVars = {
+    shortURL: req.params.shortURL,
+    username: req.cookies["username"],
+    longURL: req.params.longURL,
+  };
+  res.render("urls_register", templateVars);
 });
