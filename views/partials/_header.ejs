@@ -18,9 +18,9 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    <% if(username){ %>
+    <% if(email){ %>
     <div class="form-group mb-2 form-inline">
-      <label>Logged in as <%= username %></label>
+      <p>Logged in as <%= email.email %></p>
 
       <form class="form-inline" method="POST" action="/logout">
         <button type="submit" class="form-control mx-sm-3 btn btn-outline-dark">
@@ -29,18 +29,12 @@
       </form>
     </div>
     <% } else { %>
-    <form class="form-inline" method="POST" action="/login">
-      <div class="form-group mx-sm-3 mb-2">
-        <label for="staticEmail2" class="sr-only">Username</label>
-        <input
-          class="form-control"
-          type="text"
-          name="username"
-          placeholder="Username"
-        />
-      </div>
-      <button type="submit" class="btn btn-outline-dark">Login</button>
-    </form>
+
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" href="/login">Login</a>
+      <a class="nav-item nav-link" href="/register">Register</a>
+    </div>
+
     <% } %>
   </nav>
 </header>
