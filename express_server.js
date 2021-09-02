@@ -18,12 +18,39 @@ function generateRandomString() {
   }
   return result;
 }
-
+//url database
 const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
 };
 
+//database for the users
+const users = {
+  userRandomID: {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur",
+  },
+  user2RandomID: {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk",
+  },
+};
+//find a user object containing a matching email
+
+const findUserByEmail = (email, usersDb) => {
+  // return Object.keys(usersDb).find(key => usersDb[key].email === email)
+
+  for (let userId in users) {
+    if (users[userId].email === email) {
+      return users[userId]; // return the user object
+    }
+  }
+  return false;
+};
+
+//
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -117,9 +144,36 @@ app.post("/logout", (req, res) => {
 //Register New User
 app.get("/register", (req, res) => {
   const templateVars = {
-    shortURL: req.params.shortURL,
     username: req.cookies["username"],
-    longURL: req.params.longURL,
   };
   res.render("urls_register", templateVars);
+});
+
+//handle register form
+app.post("/register", (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  //check if a user exists
+
+  const userFound = findUserByEmail(email, users);
+  if (userFound) {
+    return res.send("The email exists!");
+  }
+  const newUserId = generateRandomString();
+
+  //generate a new User ID
+
+  const newUser = {
+    id: newUserId,
+    email,
+    password,
+  };
+
+  users[newUserId] = newUser;
+
+  //set the cookie to remeber the user
+  res.cookie("user_Id", newUserId);
+
+  res.redirect("/urls");
 });
