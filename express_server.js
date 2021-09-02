@@ -39,13 +39,25 @@ const users = {
 };
 //find a user object containing a matching email
 
-const findUserByEmail = (email, usersDb) => {
+const findUserByEmail = (email, users) => {
   // return Object.keys(usersDb).find(key => usersDb[key].email === email)
 
   for (let userId in users) {
     if (users[userId].email === email) {
       return users[userId]; // return the user object
     }
+  }
+  return false;
+};
+
+//Authenticate User
+
+const authenticateUser = (email, password, users) => {
+  // contained the user info if found or false if not
+  const userFound = findUserByEmail(email, users);
+
+  if (userFound && userFound.password === password) {
+    return userFound;
   }
   return false;
 };
@@ -66,7 +78,7 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, email: req.cookies["user_id"] };
+  const templateVars = { urls: urlDatabase, email: req.cookies["email.email"] };
 
   res.render("urls_index", templateVars);
 });
@@ -126,18 +138,32 @@ app.post("/urls/:shortURL", (req, res) => {
   res.redirect("/urls");
 });
 
+//Log in a user
+app.get("/login", (req, res) => {
+  const templateVars = {
+    email: req.cookies["user_id"],
+  };
+  res.render("urls_login", templateVars);
+});
 //login a random User
 
 app.post("/login", (req, res) => {
-  const username = req.body.username;
-  res.cookie("username", username);
-  res.redirect("/urls");
+  const { email, password } = req.body;
+  const user = authenticateUser(email, password, users);
+  if (user) {
+    // log the user in
+    res.cookie("user_id", user.id);
+    res.redirect("/urls");
+  } else {
+    res.status(403);
+    res.send("Sorry, wrong credentials! Please try again.");
+  }
 });
 
 // logout a user
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect("/urls");
 });
 
