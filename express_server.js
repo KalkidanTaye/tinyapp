@@ -66,7 +66,7 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  const templateVars = { urls: urlDatabase, email: req.cookies["user_id"] };
 
   res.render("urls_index", templateVars);
 });
@@ -77,7 +77,7 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
-    username: req.cookies["username"],
+    email: req.cookies["user_id"],
     longURL: req.params.longURL,
   };
   res.render("urls_show", templateVars);
@@ -105,7 +105,7 @@ app.post("/urls/:shortURL/update", (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
     longURL: currentLongURL,
-    username: req.cookies["username"],
+    email: req.cookies["user_id"],
   };
   res.render("urls_show", templateVars);
 });
@@ -144,7 +144,7 @@ app.post("/logout", (req, res) => {
 //Register New User
 app.get("/register", (req, res) => {
   const templateVars = {
-    username: req.cookies["username"],
+    email: req.cookies["user_id"],
   };
   res.render("urls_register", templateVars);
 });
@@ -158,11 +158,20 @@ app.post("/register", (req, res) => {
 
   const userFound = findUserByEmail(email, users);
   if (userFound) {
-    return res.send("The email exists!");
+    res.status(403);
+    return res.send("The email already exists!");
   }
-  const newUserId = generateRandomString();
+  if (!email) {
+    res.status(403);
+    return res.send("Please enter a valid email address");
+  }
+  if (!password) {
+    res.status(403);
+    return res.send("Please enter a password");
+  }
 
   //generate a new User ID
+  const newUserId = generateRandomString();
 
   const newUser = {
     id: newUserId,
@@ -176,4 +185,8 @@ app.post("/register", (req, res) => {
   res.cookie("user_Id", newUserId);
 
   res.redirect("/urls");
+});
+
+app.get("/users", (req, res) => {
+  res.json(users);
 });
