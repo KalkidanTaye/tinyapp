@@ -18,9 +18,9 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    <% if(email){ %>
+    <% if(user){ %>
     <div class="form-group mb-2 form-inline">
-      <p>Logged in as <%= email.email %></p>
+      <p>Logged in as <%= user.email %></p>
 
       <form class="form-inline" method="POST" action="/logout">
         <button type="submit" class="form-control mx-sm-3 btn btn-outline-dark">
