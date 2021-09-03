@@ -179,22 +179,27 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 
 // show update form
-app.post("/urls/:shortURL/", (req, res) => {
-  const currentLongURL = urlDatabase[req.params.shortURL];
+app.post("/urls/:shortURL/update", (req, res) => {
+  const userId = req.cookies["user_id"];
+  const shortURL = req.params.shortURL;
+  const currentLongURL = urlDatabase[shortURL].longURL;
+  console.log(urlDatabase[shortURL].longURL);
+
   const templateVars = {
     shortURL: req.params.shortURL,
     longURL: currentLongURL,
-    user: req.cookies["user_id"],
+    user: users[userId],
   };
   res.render("urls_show", templateVars);
 });
 
 //update urlDatabase
 
-app.post("/urls/:shortURL/update", (req, res) => {
+app.post("/urls/:shortURL", (req, res) => {
+  const userId = req.cookies["user_id"];
   const shortURL = req.params.shortURL;
   const updatedLongURL = req.body.longURL;
-  urlDatabase[shortURL] = updatedLongURL;
+  urlDatabase[shortURL].longURL = updatedLongURL;
   res.redirect("/urls");
 });
 
