@@ -4,6 +4,7 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const bcrypt = require("bcryptjs");
 const cookieSession = require("cookie-session");
+const { findUserByEmail } = require("./helpers.js");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
@@ -66,17 +67,6 @@ const urlsForUser = function (user_id, urlDatabase) {
     }
   }
   return results;
-};
-
-//find a user object containing a matching email
-
-const findUserByEmail = (email, users) => {
-  for (let userId in users) {
-    if (users[userId].email === email) {
-      return users[userId];
-    }
-  }
-  return false;
 };
 
 //Authenticate User
