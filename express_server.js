@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = 8080; // default port 8080
+const PORT = 8080;
 const bodyParser = require("body-parser");
 const bcrypt = require("bcryptjs");
 const cookieSession = require("cookie-session");
@@ -112,7 +112,8 @@ app.get("/login", (req, res) => {
   res.render("urls_login", templateVars);
 });
 
-//Register New User - works
+//Register New User
+
 app.get("/register", (req, res) => {
   const templateVars = {
     user: req.session["user_id"],
@@ -141,12 +142,14 @@ app.post("/urls", (req, res) => {
 });
 
 //delete short URL from database
+
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
 });
 
 // update
+
 app.post("/urls/:shortURL/update", (req, res) => {
   const userId = req.session["user_id"];
   const shortURL = req.params.shortURL;
