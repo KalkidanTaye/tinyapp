@@ -168,7 +168,6 @@ app.post("/urls/:shortURL", (req, res) => {
     res.status(403);
     res.send("Sorry, wrong credentials! Please try again.");
   }
-  console.log(urlDatabase[shortURL].userID, user.id);
   if (urlDatabase[shortURL].userID !== user.id) {
     res.status(403);
     res.send("Sorry, wrong credentials! Not your URL! Please login.");
@@ -189,7 +188,6 @@ app.post("/login", (req, res) => {
     res.send("Sorry, wrong credentials! Please try again.");
   }
   req.session["user_id"] = authenticatedUser.id;
-  // req.session("user_id", user.id);
   res.redirect("/urls");
 });
 
@@ -205,6 +203,7 @@ app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const userFound = findUserByEmail(email, users);
+  const hashedPassword = bcrypt.hashSync(password, 10);
 
   if (userFound) {
     res.status(403);
@@ -219,10 +218,10 @@ app.post("/register", (req, res) => {
   const newUser = {
     id: newUserId,
     email,
-    password,
+    password: hashedPassword,
   };
 
   users[newUserId] = newUser;
-  res.cookie("user_Id", newUserId);
+  req.session.user_id = newUserId;
   res.redirect("/urls");
 });
