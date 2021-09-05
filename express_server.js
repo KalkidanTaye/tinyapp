@@ -4,7 +4,12 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const bcrypt = require("bcryptjs");
 const cookieSession = require("cookie-session");
-const { findUserByEmail } = require("./helpers.js");
+const {
+  findUserByEmail,
+  generateRandomString,
+  authenticateUser,
+  urlsForUser,
+} = require("./helpers.js");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
@@ -42,41 +47,6 @@ const users = {
     email: "kali@gmail.com",
     password: bcrypt.hashSync("kalikali", 10),
   },
-};
-
-//---------------------------- Function ---------------------------
-// Generates random ID
-function generateRandomString() {
-  let result = "";
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let charactersLength = characters.length;
-  for (let i = 0; i < 6; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-}
-//return url for a user
-
-const urlsForUser = function (user_id, urlDatabase) {
-  const results = {};
-  for (let urlKey in urlDatabase) {
-    const url = urlDatabase[urlKey];
-    if (url.userID === user_id) {
-      results[urlKey] = url;
-    }
-  }
-  return results;
-};
-
-//Authenticate User
-
-const authenticateUser = (email, password, users) => {
-  const userFound = findUserByEmail(email, users);
-  if (userFound && bcrypt.compareSync(password, userFound.password)) {
-    return userFound;
-  }
-  return false;
 };
 
 app.listen(PORT, () => {
